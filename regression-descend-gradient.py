@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-data_file = "../data1.txt"
+data_file = "data1.txt"
 data_read = open(data_file, "r", encoding="utf8")
 
 try:
@@ -19,10 +19,11 @@ y = []
 # put de data file in variables
 for line in data:
     splitted = line.split(",")
-    _x = float(splitted[0]) if splitted[0] != "" else 0
-    _y = float(splitted[1]) if splitted[1] != "" else 0
-    x.append(_x)
-    y.append(_y)
+    if splitted != ['']:
+        _x = float(splitted[0]) if splitted[0] != "" else 0
+        _y = float(splitted[1]) if splitted[1] != "" else 0
+        x.append(_x)
+        y.append(_y)
 
 x_axis = np.array(x).reshape((-1, 1))
 y_axis = np.array(y)
