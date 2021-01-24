@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.linear_model import LinearRegression
 
+############################################################
+# 1. Catch the data file
+############################################################
 data_file = "data1.txt"
 data_read = open(data_file, "r", encoding="utf8")
 
@@ -15,50 +17,50 @@ except Exception as ex:
 
 x = []
 y = []
-
-# put de data file in variables
+# put de data file in the variables
 for line in data:
-    splitted = line.split(",")
-    if splitted != ['']:
-        _x = float(splitted[0]) if splitted[0] != "" else 0
-        _y = float(splitted[1]) if splitted[1] != "" else 0
+    split_data = line.split(",")
+    if split_data != ['']:
+        _x = float(split_data[0]) if split_data[0] != "" else 0
+        _y = float(split_data[1]) if split_data[1] != "" else 0
         x.append(_x)
         y.append(_y)
 
-x_axis = np.array(x).reshape((-1, 1))
+x_axis = np.array(x)
 y_axis = np.array(y)
 
 
-def calculate_cost(x_in, theta0, theta1):
-    return theta0 + (theta1 * x_in)
+# in this point we have the x and y values into arrays
+
+############################################################
+# 2. function to estimate the coefficients
+############################################################
+def estimate_coefficients(x_in, y_in):
+    # number of observations/points
+    n = np.size(x_in)
+    print(n)
+
+    # mean of x and y vector
+    m_x, m_y = np.mean(x_in), np.mean(y_in)
+    print(m_x)
+    print(m_y)
+
+    # calculating cross-deviation and deviation about x
+    SS_xy = np.sum(y * x_in) - n * m_y * m_x
+    SS_xx = np.sum(x * x_in) - n * m_x * m_x
+
+    # calculating regression coefficients
+    b_1 = SS_xy / SS_xx
+    b_0 = m_y - b_1 * m_x
+
+    return b_0, b_1
 
 
-def descent_gradient(x_in, y_in, theta0, theta1, learning_rate=0.01, iterations=1000):
-    costs = []
-    m = len(y)
-    for i in range(iterations):
-        new_theta0 = theta0 - learning_rate * (1 / m) * (calculate_cost(x_in, theta0, theta1) - y_in)
-        new_theta1 = theta1 - learning_rate * (1 / m) * (calculate_cost(x, theta0, theta1) - y_in) * x_in
-
-        theta0 = new_theta0
-        theta1 = new_theta1
-        costs[i] = (theta0, theta1)
-    return theta0, theta1
-
-
-model = LinearRegression().fit(x_axis, y_axis)
-coefficient = model.score(x_axis, y)
-print("𝑓(𝑥) = 𝑏₀ + 𝑏₁𝑥")
-print("\nCoeficiente de determinação (R²): ", coefficient)
-print("Intercessão no eixo Y (theta0): ", model.intercept_)
-print("Inclinação da reta (theta1): ", model.coef_[0])
-print(f"\n𝑓(𝑥) = {model.intercept_} + {model.coef_[0]}𝑥")
-
-
-x_plot = np.linspace(0, 24, 100)
-y_plot = (model.coef_[0] * x_plot) + model.intercept_
+coefficients = estimate_coefficients(x_axis, y_axis)
+print("Coeficientes:\na: " + str(coefficients[1]) + " b: " + str(coefficients[0]))
+x_plot = x_axis
+y_plot = coefficients[1] * x_plot + coefficients[0]
 plt.plot(x_plot, y_plot)
-
 # plot the data
 plt.plot(x, y, "bo")
 

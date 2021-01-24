@@ -33,13 +33,20 @@ x_axis = np.array(x).reshape((-1, 1))
 y_axis = np.array(y)
 z_axis = np.array(z)
 
+model = LinearRegression().fit(x_axis, y_axis, z_axis)
+coefficient = model.score(x_axis, y_axis, z)
+
+x_plot = np.linspace(0, 24, 100)
+y_plot = np.linspace(0, 24, 100)
+z_plot = (model.coef_[0] * x_plot) + (model.coef_[0] * y_plot) + model.intercept_
+
 # plot the data
 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 
+ax.scatter3D(x_plot, y_plot, z_plot, c=z_plot, cmap='Greens')
 ax.scatter3D(x_axis, y_axis, z_axis, c=z_axis, cmap='Greens')
-
 
 # Axes3D.plot_wireframe(x_axis, y_axis, z_axis)
 #
